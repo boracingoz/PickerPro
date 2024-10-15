@@ -1,5 +1,4 @@
-﻿
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Commands.Levels
 {
@@ -10,6 +9,16 @@ namespace Commands.Levels
         public OnLevelDestroyerCommand(Transform levelHolder)
         {
             _levelHolder = levelHolder;
+        }
+
+        public void Exucute()
+        {
+            if (_levelHolder.childCount <= 0)
+            {
+                return;
+            }
+            
+            Object.Destroy(_levelHolder.transform.GetChild(0).gameObject);
         }
     }
 }

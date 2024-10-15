@@ -1,4 +1,5 @@
 using Commands.Levels;
+using Data.UnityObjects;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -31,15 +32,42 @@ namespace Manager
             _levelLoaderCommand = new OnLevelLoaderCommand(_levelHolder);
             _levelDestroyerCommand = new OnLevelDestroyerCommand(_levelHolder);
         }
+        private LevelData GetlevelData()
+        {
+            return Resources.Load<CD_Level>("Data/CD_Level").levels[_currentLevel]; //?
+        }
 
         private byte GetActiveLevel()
         {
-            throw new NotImplementedException();
+            return _currentLevel;
         }
 
-        private LevelData GetlevelData()
+        private void OnEnable()
         {
-            throw new NotImplementedException();
+            SubscribeEvents();
+        }
+
+        private void SubscribeEvents()
+        {
+            CoreGamesSignals.Instance.onLevelInitialize += _levelLoaderCommand.Exucute;
+            CoreGamesSignals.Instance.onLevelDestroy += _levelDestroyerCommand.Exucute;
+            CoreGamesSignals.Instance.onGetLevelValue += OnGetValue;
+            CoreGamesSignals.Instance.onNextLevel += OnNextLevel;
+            CoreGamesSignals.Instance.onRestartLevet += OnRestartLevel;
+        }
+
+        private void UnSubscribeEvents()
+        {
+            CoreGamesSignals.Instance.onLevelInitialize -= _levelLoaderCommand.Exucute;
+            CoreGamesSignals.Instance.onLevelDestroy -= _levelDestroyerCommand.Exucute;
+            CoreGamesSignals.Instance.onGetLevelValue -= OnGetValue;
+            CoreGamesSignals.Instance.onNextLevel -= OnNextLevel;
+            CoreGamesSignals.Instance.onRestartLevet -= OnRestartLevel;
+        }
+
+        private void OnDisable()
+        {
+            UnSubscribeEvents();
         }
     }
 }

@@ -1,6 +1,4 @@
-﻿
-
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Commands.Levels
 {
@@ -11,6 +9,11 @@ namespace Commands.Levels
         public OnLevelLoaderCommand(Transform levelHolder)
         {
             _levelHolder = levelHolder;
+        }
+
+        public void Exucute(byte levelIndex) //level indexini görmek için
+        {
+            Object.Instantiate(Resources.Load<GameObject>($"Prefabs/LevelPrefabs/Level {levelIndex}"), _levelHolder, true); //?
         }
     }
 }

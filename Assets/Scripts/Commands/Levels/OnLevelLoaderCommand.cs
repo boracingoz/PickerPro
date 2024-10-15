@@ -11,9 +11,10 @@ namespace Commands.Levels
             _levelHolder = levelHolder;
         }
 
-        public void Exucute(byte levelIndex) //level indexini görmek için
+        public void Execute(byte levelIndex)
         {
-            Object.Instantiate(Resources.Load<GameObject>($"Prefabs/LevelPrefabs/Level {levelIndex}"), _levelHolder, true); //?
+            Object.Instantiate(Resources.Load<GameObject>($"Prefabs/LevelPrefabs/Level {levelIndex}"), _levelHolder, true);
         }
+
     }
 }

@@ -1,5 +1,6 @@
 using Commands.Levels;
 using Data.UnityObjects;
+using Signals;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -16,8 +17,10 @@ namespace Manager
         private OnLevelLoaderCommand _levelLoaderCommand;
         private OnLevelDestroyerCommand _levelDestroyerCommand;
 
-        private byte _currentLevel;
+        private short _currentLevel;
         private LevelData _levelData;
+
+
 
         private void Awake()
         {
@@ -39,7 +42,7 @@ namespace Manager
 
         private byte GetActiveLevel()
         {
-            return _currentLevel;
+            return (byte)_currentLevel;
         }
 
         private void OnEnable()
@@ -49,17 +52,37 @@ namespace Manager
 
         private void SubscribeEvents()
         {
-            CoreGamesSignals.Instance.onLevelInitialize += _levelLoaderCommand.Exucute;
-            CoreGamesSignals.Instance.onLevelDestroy += _levelDestroyerCommand.Exucute;
+            CoreGamesSignals.Instance.onLevelInitialize += _levelLoaderCommand.Execute;
+            CoreGamesSignals.Instance.onClearActiveLevel += _levelDestroyerCommand.Exucute;
             CoreGamesSignals.Instance.onGetLevelValue += OnGetValue;
             CoreGamesSignals.Instance.onNextLevel += OnNextLevel;
             CoreGamesSignals.Instance.onRestartLevet += OnRestartLevel;
         }
 
+        private void OnNextLevel()
+        {
+            _currentLevel++;
+            CoreGamesSignals.Instance.onClearActiveLevel?.Invoke();
+            CoreGamesSignals.Instance.onReset?.Invoke();
+            CoreGamesSignals.Instance.onLevelInitialize?.Invoke((byte)(_currentLevel % _totalLevelCount));
+        }
+
+        private void OnRestartLevel()
+        {
+            CoreGamesSignals.Instance.onClearActiveLevel?.Invoke();
+            CoreGamesSignals.Instance.onReset?.Invoke();
+            CoreGamesSignals.Instance.onLevelInitialize?.Invoke((byte)(_currentLevel % _totalLevelCount));
+        }
+
+        private byte OnGetValue()
+        {
+            return (byte)_currentLevel;
+        }
+
         private void UnSubscribeEvents()
         {
-            CoreGamesSignals.Instance.onLevelInitialize -= _levelLoaderCommand.Exucute;
-            CoreGamesSignals.Instance.onLevelDestroy -= _levelDestroyerCommand.Exucute;
+            CoreGamesSignals.Instance.onLevelInitialize -= _levelLoaderCommand.Execute;
+            CoreGamesSignals.Instance.onClearActiveLevel -= _levelDestroyerCommand.Exucute;
             CoreGamesSignals.Instance.onGetLevelValue -= OnGetValue;
             CoreGamesSignals.Instance.onNextLevel -= OnNextLevel;
             CoreGamesSignals.Instance.onRestartLevet -= OnRestartLevel;
@@ -68,6 +91,11 @@ namespace Manager
         private void OnDisable()
         {
             UnSubscribeEvents();
+        }
+
+        private void Start()
+        {
+            CoreGamesSignals.Instance.onLevelInitialize?.Invoke((byte)(_currentLevel % _totalLevelCount));  
         }
     }
 }

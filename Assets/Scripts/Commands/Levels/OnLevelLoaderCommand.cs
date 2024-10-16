@@ -6,7 +6,7 @@ namespace Commands.Levels
     {
         private Transform _levelHolder;
 
-        public OnLevelLoaderCommand(Transform levelHolder)
+        internal OnLevelLoaderCommand(Transform levelHolder)
         {
             _levelHolder = levelHolder;
         }

@@ -21,6 +21,8 @@ namespace Assets.Scripts.Signals
         }
 
         public UnityAction onFirstTouch = delegate { };
+        public UnityAction onEnableInput = delegate { };
+        public UnityAction onDisableInput = delegate { };
         public UnityAction onInputTaken = delegate { };
         public UnityAction onInputRelase = delegate { };
         public UnityAction<HorizontalInputParams> onInputDragged = delegate { };
